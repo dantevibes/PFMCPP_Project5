@@ -84,6 +84,7 @@ struct Oscillator
     void syncOscillator(Oscillator oscToSyncTo);
     int nextSamp(int freq, int phase, char whichWave);
     void outputSignal(int frequency, int bufferSize);
+    void getSemitone();
 };
 
 Oscillator::Oscillator()
@@ -133,6 +134,11 @@ void Oscillator::outputSignal(int frequency, int bufferSize)
     std::cout<< "buffer write done" << std::endl;
 }
 
+void Oscillator::getSemitone()
+{
+    std::cout << "Osc is set to semitone "<< this->semitone << std::endl;
+}
+
 
 /*
  copied UDT 2:
@@ -167,6 +173,7 @@ struct Filter
     void changeType(char nextType);
     void switchInput(int newInput);
     void filterSweep(int startFreq, int endFreq, float sweepTimeInMillis);
+    void getFilterType();
 };
 
 Filter::Filter()
@@ -226,6 +233,11 @@ void Filter::LFO::syncToOscillator(Oscillator syncTo, float warpAmount)
     frequency = syncTo.lfoAmount;
     warpAmount = 30.3f;
 }
+
+void Filter::getFilterType()
+{
+    std::cout << "Filter is set to type "<< this-> filterType << std::endl;
+}
 /*
  copied UDT 3:
  */
@@ -247,6 +259,7 @@ struct Amplifier
     void addFilteredDrive(float driveAmount, Filter inputFilter);
     void changeWaveshaperMode(int nextMode);
     void envelope(int aMils, int dMils, int sCutoff, int rMils);
+    void getLoudness();
 };
 
 Amplifier::Amplifier()
@@ -271,7 +284,7 @@ void Amplifier::divideSignalBy(float denominator)
 
 void Amplifier::addFilteredDrive(float driveAmount, Filter inputFilter)
 {
-    std::cout<< "OutputFilter's cutoff Freq is: " << outputFilter.cutoffFreq << std::endl;
+    std::cout<< "outputFilter's cutoff Freq is: " << outputFilter.cutoffFreq << std::endl;
 
     outputFilter.cutoffFreq = inputFilter.cutoffFreq;
     driveLevel += driveAmount;
@@ -304,6 +317,11 @@ void Amplifier::envelope(int aMils, int dMils, int sCutoff, int rMils)
         outputFilter.cutoffFreq -= rDiv;
     std::cout<< "Amplifier envelope release complete" << std::endl;
     std::cout<< "Amplifier cutoff is at " << outputFilter.cutoffFreq << std::endl;
+}
+
+void Amplifier::getLoudness()
+{
+  std::cout<<"Amplifier's overall loudness is "<< this->driveLevel * this->toneLevel<< std::endl;
 }
 /*
  new UDT 4:
@@ -435,20 +453,32 @@ void SubWoof::gateToSignal(float inputSignal, float threshold)
 #include <iostream>
 int main()
 {
-    std::cout << "good to go!" << std::endl;
-
     Oscillator bigSaw;
     bigSaw.semitone = 400;
-    bigSaw.outputSignal(bigSaw.semitone, 10);
+    //bigSaw.outputSignal(bigSaw.semitone, 10);
+    std::cout << "Osc is set to semitone "<< bigSaw.semitone << std::endl;
+    bigSaw.getSemitone();
+
 
     Filter highPassButter;
     highPassButter.changeType('H');
-    highPassButter.filterSweep(30, 220, 2.2f);
+    //highPassButter.filterSweep(30, 220, 2.2f);
+    std::cout << "Filter is set to type "<< highPassButter.filterType << std::endl;
+    highPassButter.getFilterType();
+
 
     Amplifier fatStackMcGee;
-    fatStackMcGee.addFilteredDrive(1.2f, highPassButter);
-    fatStackMcGee.envelope(20, 200, 400, 400);
+    //fatStackMcGee.addFilteredDrive(1.2f, highPassButter);
+    //fatStackMcGee.envelope(20, 200, 400, 400);
+    std::cout<<"Amplifier's overall loudness is "<< fatStackMcGee.driveLevel * fatStackMcGee.toneLevel<< std::endl;
+    fatStackMcGee.getLoudness();
+
+    std::cout << "good to go!" << std::endl;
+    std::cout<<std::endl;
 
     MonoSynth trailBlazer;
     SubWoof bumpin;
+
+
 }
+ 
