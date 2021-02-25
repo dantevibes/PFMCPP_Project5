@@ -71,7 +71,7 @@ struct Oscillator
     Oscillator();
     ~Oscillator()
     {
-        std::cout<< "Osc last phase is " << phaseIndex << std::endl;
+        std::cout << "Osc last phase is " << phaseIndex << std::endl;
     }
 
     int semitone;
@@ -129,14 +129,14 @@ void Oscillator::outputSignal(int frequency, int bufferSize)
     std::cout << "Value of sample at " ;
     for (int bufferSample = 0; bufferSample < bufferSize; ++bufferSample)
     {
-        std::cout<< bufferSample << " = " << nextSamp(frequency, bufferSample, waveform) << ", ";
+        std::cout << bufferSample << " = " << nextSamp(frequency, bufferSample, waveform) << ", ";
     }
-    std::cout<< "buffer write done" << std::endl;
+    std::cout << "buffer write done" << std::endl;
 }
 
 void Oscillator::getSemitone()
 {
-    std::cout << "Osc is set to semitone "<< this->semitone << std::endl;
+    std::cout << "Osc is set to semitone " << this->semitone << std::endl;
 }
 
 
@@ -212,7 +212,7 @@ void Filter::filterSweep(int startFreq, int endFreq, float sweepTimeInMillis)
             if(cutoffFreq < endFreq) 
                 ++cutoffFreq;
         }
-        std::cout << "Cutoff sweep is at " << cutoffFreq <<std::endl;
+        std::cout << "Cutoff sweep is at " << cutoffFreq << std::endl;
     } 
 
     std::cout << "Cutoff Freq is at " << cutoffFreq << std::endl;
@@ -356,7 +356,7 @@ struct MonoSynth
         powerAmp.toneLevel = 60;
         powerAmp.outputFilter.resonance = 40;
 
-        std::cout<<"MonoSynth's output after UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel << std::endl;
+        std::cout << "MonoSynth's output after UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel << std::endl;
     }
 
     bool arpeggiator(int noteOne, int noteTwo, int noteThree)
@@ -433,7 +433,7 @@ void SubWoof::gateToSignal(float inputSignal, float threshold)
     else
         cleanBassAmp.outputLeveldB = -60.00;
 
-    std::cout << "cleanBass output level is " << cleanBassAmp.outputLeveldB << " dB" <<std::endl;
+    std::cout << "cleanBass output level is " << cleanBassAmp.outputLeveldB << " dB" << std::endl;
 }
 
 /*
@@ -456,7 +456,7 @@ int main()
     Oscillator bigSaw;
     bigSaw.semitone = 400;
     //bigSaw.outputSignal(bigSaw.semitone, 10);
-    std::cout << "Osc is set to semitone "<< bigSaw.semitone << std::endl;
+    std::cout << "Osc is set to semitone " << bigSaw.semitone << std::endl;
     bigSaw.getSemitone();
 
 
@@ -474,7 +474,7 @@ int main()
     fatStackMcGee.getLoudness();
 
     std::cout << "good to go!" << std::endl;
-    std::cout<<std::endl;
+    std::cout << std::endl;
 
     MonoSynth trailBlazer;
     SubWoof bumpin;
