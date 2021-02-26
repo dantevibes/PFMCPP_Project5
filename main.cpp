@@ -71,7 +71,7 @@ struct Oscillator
     Oscillator();
     ~Oscillator()
     {
-        std::cout<< "Osc last phase is " << phaseIndex << std::endl;
+        std::cout << "Osc last phase is " << phaseIndex << std::endl;
     }
 
     int semitone;
@@ -84,6 +84,7 @@ struct Oscillator
     void syncOscillator(Oscillator oscToSyncTo);
     int nextSamp(int freq, int phase, char whichWave);
     void outputSignal(int frequency, int bufferSize);
+    void getSemitone();
 };
 
 Oscillator::Oscillator()
@@ -125,12 +126,17 @@ int Oscillator::nextSamp(int freq, int phase, char whichWave)
 
 void Oscillator::outputSignal(int frequency, int bufferSize)
 {
-    std::cout<< "Value of sample at " ;
+    std::cout << "Value of sample at " ;
     for (int bufferSample = 0; bufferSample < bufferSize; ++bufferSample)
     {
-        std::cout<< bufferSample << " = " << nextSamp(frequency, bufferSample, waveform) << ", ";
+        std::cout << bufferSample << " = " << nextSamp(frequency, bufferSample, waveform) << ", ";
     }
-    std::cout<< "buffer write done" << std::endl;
+    std::cout << "buffer write done" << std::endl;
+}
+
+void Oscillator::getSemitone()
+{
+    std::cout << "Osc is set to semitone " << this->semitone << std::endl;
 }
 
 
@@ -142,7 +148,7 @@ struct Filter
     Filter();
     ~Filter()
     {
-        std::cout<< "Filt end freq is " << cutoffFreq << std::endl;
+        std::cout << "Filt end freq is " << cutoffFreq << std::endl;
     }
 
     int cutoffFreq;
@@ -167,6 +173,7 @@ struct Filter
     void changeType(char nextType);
     void switchInput(int newInput);
     void filterSweep(int startFreq, int endFreq, float sweepTimeInMillis);
+    void getFilterType();
 };
 
 Filter::Filter()
@@ -205,10 +212,10 @@ void Filter::filterSweep(int startFreq, int endFreq, float sweepTimeInMillis)
             if(cutoffFreq < endFreq) 
                 ++cutoffFreq;
         }
-        std::cout<< "Cutoff sweep is at " << cutoffFreq <<std::endl;
+        std::cout << "Cutoff sweep is at " << cutoffFreq << std::endl;
     } 
 
-    std::cout<< "Cutoff Freq is at " << cutoffFreq << std::endl;
+    std::cout << "Cutoff Freq is at " << cutoffFreq << std::endl;
 }
 
 void Filter::LFO::changeWaveform(char nextWave)
@@ -226,6 +233,11 @@ void Filter::LFO::syncToOscillator(Oscillator syncTo, float warpAmount)
     frequency = syncTo.lfoAmount;
     warpAmount = 30.3f;
 }
+
+void Filter::getFilterType()
+{
+    std::cout << "Filter is set to type " << this-> filterType << std::endl;
+}
 /*
  copied UDT 3:
  */
@@ -234,7 +246,7 @@ struct Amplifier
     Amplifier();
     ~Amplifier()
     {
-        std::cout<< "Final amp level is " << outputLeveldB << std::endl;
+        std::cout << "Final amp level is " << outputLeveldB << std::endl;
     }
 
     float driveLevel;
@@ -247,6 +259,7 @@ struct Amplifier
     void addFilteredDrive(float driveAmount, Filter inputFilter);
     void changeWaveshaperMode(int nextMode);
     void envelope(int aMils, int dMils, int sCutoff, int rMils);
+    void getLoudness();
 };
 
 Amplifier::Amplifier()
@@ -271,12 +284,12 @@ void Amplifier::divideSignalBy(float denominator)
 
 void Amplifier::addFilteredDrive(float driveAmount, Filter inputFilter)
 {
-    std::cout<< "OutputFilter's cutoff Freq is: " << outputFilter.cutoffFreq << std::endl;
+    std::cout << "outputFilter's cutoff Freq is: " << outputFilter.cutoffFreq << std::endl;
 
     outputFilter.cutoffFreq = inputFilter.cutoffFreq;
     driveLevel += driveAmount;
 
-    std::cout<< "outputFilter's cutoff Freq changed to: " << outputFilter.cutoffFreq << std::endl;
+    std::cout << "outputFilter's cutoff Freq changed to: " << outputFilter.cutoffFreq << std::endl;
 }
 
 void Amplifier::changeWaveshaperMode(int nextMode)
@@ -288,22 +301,27 @@ void Amplifier::envelope(int aMils, int dMils, int sCutoff, int rMils)
 {
     outputFilter.cutoffFreq = 0;
     int aDiv = 20000/aMils;
-    std::cout<< "aDiv:" << aDiv <<std::endl;
+    std::cout << "aDiv:" << aDiv << std::endl;
     int dDiv = (20000-sCutoff)/dMils;
-    std::cout<< "dDiv:" << dDiv <<std::endl;
+    std::cout << "dDiv:" << dDiv << std::endl;
     int rDiv = sCutoff/rMils; //problem when rounding to 0...change type
-    std::cout<< "rDiv:" << rDiv <<std::endl;
+    std::cout << "rDiv:" << rDiv << std::endl;
 
     for( int i = 0 ; i < aMils ; ++i)
         outputFilter.cutoffFreq += aDiv;
-    std::cout<< "Amplifier envelope attack complete" << std::endl;
+    std::cout << "Amplifier envelope attack complete" << std::endl;
     for( int i = 0 ; i < dMils ; ++i)
         outputFilter.cutoffFreq -= dDiv;
-    std::cout<< "Amplifier envelope decay complete" <<std::endl;
+    std::cout << "Amplifier envelope decay complete" << std::endl;
     for( int i = 0 ; i < rMils ; ++i)
         outputFilter.cutoffFreq -= rDiv;
-    std::cout<< "Amplifier envelope release complete" << std::endl;
-    std::cout<< "Amplifier cutoff is at " << outputFilter.cutoffFreq << std::endl;
+    std::cout << "Amplifier envelope release complete" << std::endl;
+    std::cout << "Amplifier cutoff is at " << outputFilter.cutoffFreq << std::endl;
+}
+
+void Amplifier::getLoudness()
+{
+  std::cout << "Amplifier's overall loudness is " << this->driveLevel * this->toneLevel << std::endl;
 }
 /*
  new UDT 4:
@@ -315,7 +333,7 @@ struct MonoSynth
     ~MonoSynth()
     {
         powerAmp.outputLeveldB = -60.f;
-        std::cout<< "Amplifier level is "<< powerAmp.outputLeveldB<< ", Shutting down Monosynth"<< std::endl;
+        std::cout << "Amplifier level is " << powerAmp.outputLeveldB << ", Shutting down Monosynth" << std::endl;
     }
 
     Oscillator leadWave;
@@ -325,7 +343,7 @@ struct MonoSynth
 
     void unisonFattener()
     {
-        std::cout<<"MonoSynth's output before UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel <<std::endl;
+        std::cout << "MonoSynth's output before UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel << std::endl;
 
         syncWave.syncOscillator(leadWave);
         leadWave.phaseIndex += .05f;
@@ -338,7 +356,7 @@ struct MonoSynth
         powerAmp.toneLevel = 60;
         powerAmp.outputFilter.resonance = 40;
 
-        std::cout<<"MonoSynth's output after UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel <<std::endl;
+        std::cout << "MonoSynth's output after UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel << std::endl;
     }
 
     bool arpeggiator(int noteOne, int noteTwo, int noteThree)
@@ -380,7 +398,7 @@ struct SubWoof
     SubWoof();
     ~SubWoof()
     {
-        std::cout<< "Closing SubWoof" << std::endl;
+        std::cout << "Closing SubWoof" << std::endl;
     }
 
     Oscillator subTone;
@@ -415,7 +433,7 @@ void SubWoof::gateToSignal(float inputSignal, float threshold)
     else
         cleanBassAmp.outputLeveldB = -60.00;
 
-    std::cout<< "cleanBass output level is " << cleanBassAmp.outputLeveldB << " dB" <<std::endl;
+    std::cout << "cleanBass output level is " << cleanBassAmp.outputLeveldB << " dB" << std::endl;
 }
 
 /*
@@ -435,19 +453,28 @@ void SubWoof::gateToSignal(float inputSignal, float threshold)
 #include <iostream>
 int main()
 {
-    std::cout << "good to go!" << std::endl;
-
     Oscillator bigSaw;
     bigSaw.semitone = 400;
-    bigSaw.outputSignal(bigSaw.semitone, 10);
+    //bigSaw.outputSignal(bigSaw.semitone, 10);
+    std::cout << "Osc is set to semitone " << bigSaw.semitone << std::endl;
+    bigSaw.getSemitone();
+
 
     Filter highPassButter;
     highPassButter.changeType('H');
-    highPassButter.filterSweep(30, 220, 2.2f);
+    //highPassButter.filterSweep(30, 220, 2.2f);
+    std::cout << "Filter is set to type " << highPassButter.filterType << std::endl;
+    highPassButter.getFilterType();
+
 
     Amplifier fatStackMcGee;
-    fatStackMcGee.addFilteredDrive(1.2f, highPassButter);
-    fatStackMcGee.envelope(20, 200, 400, 400);
+    //fatStackMcGee.addFilteredDrive(1.2f, highPassButter);
+    //fatStackMcGee.envelope(20, 200, 400, 400);
+    std::cout << "Amplifier's overall loudness is " << fatStackMcGee.driveLevel * fatStackMcGee.toneLevel << std::endl;
+    fatStackMcGee.getLoudness();
+
+    std::cout << "good to go!" << std::endl;
+    std::cout << std::endl;
 
     MonoSynth trailBlazer;
     SubWoof bumpin;
