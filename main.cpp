@@ -44,11 +44,7 @@ You don't have to do this, you can keep your current object name and just change
  if you would like to suppress them, add -Wno-exit-time-destructors to the .replit file 
    with the other warning suppression flags
  */
-
-
-
-
-
+#include "LeakedObjectDetector.h"
 /*
  copied UDT 1:
  */
@@ -71,6 +67,8 @@ struct Oscillator
     int nextSamp(int freq, int phase, char whichWave);
     void outputSignal(int frequency, int bufferSize);
     void getSemitone();
+
+    JUCE_LEAK_DETECTOR(Oscillator)
 };
 
 Oscillator::Oscillator()
@@ -126,6 +124,19 @@ void Oscillator::getSemitone()
 }
 
 
+struct OscillatorWrapper
+{
+    OscillatorWrapper(Oscillator* ptr) : ptrToOscillator( ptr ) {}
+    ~OscillatorWrapper()
+    {
+        delete ptrToOscillator;
+    }
+
+    Oscillator* ptrToOscillator = nullptr;
+};
+
+
+
 /*
  copied UDT 2:
  */
@@ -160,6 +171,8 @@ struct Filter
     void switchInput(int newInput);
     void filterSweep(int startFreq, int endFreq, float sweepTimeInMillis);
     void getFilterType();
+
+    JUCE_LEAK_DETECTOR(Filter)
 };
 
 Filter::Filter()
@@ -224,6 +237,19 @@ void Filter::getFilterType()
 {
     std::cout << "Filter is set to type " << this-> filterType << std::endl;
 }
+
+
+struct FilterWrapper
+{
+    FilterWrapper(Filter* ptr) : ptrToFilter( ptr ) {}
+    ~FilterWrapper()
+    {
+        delete ptrToFilter;
+    }
+
+    Filter* ptrToFilter = nullptr;
+};
+
 /*
  copied UDT 3:
  */
@@ -246,6 +272,8 @@ struct Amplifier
     void changeWaveshaperMode(int nextMode);
     void envelope(int aMils, int dMils, int sCutoff, int rMils);
     void getLoudness();
+
+    JUCE_LEAK_DETECTOR(Amplifier)
 };
 
 Amplifier::Amplifier()
@@ -309,6 +337,18 @@ void Amplifier::getLoudness()
 {
   std::cout << "Amplifier's overall loudness is " << this->driveLevel * this->toneLevel << std::endl;
 }
+
+
+struct AmplifierWrapper
+{
+    AmplifierWrapper(Amplifier* ptr) : ptrToAmplifier( ptr ) {}
+    ~AmplifierWrapper()
+    {
+        delete ptrToAmplifier;
+    }
+
+    Amplifier* ptrToAmplifier = nullptr;
+};
 /*
  new UDT 4:
  with 2 member functions
@@ -363,8 +403,7 @@ struct MonoSynth
         return isArpDone;
     }
 
-
-
+    JUCE_LEAK_DETECTOR(MonoSynth)
 };
 
 MonoSynth::MonoSynth()
@@ -373,6 +412,18 @@ MonoSynth::MonoSynth()
     briteHiPass.cutoffFreq = 500;
     leadWave.outputSignal(100,1);
 }
+
+
+struct MonoSynthWrapper
+{
+    MonoSynthWrapper(MonoSynth* ptr) : ptrToMonoSynth( ptr ) {}
+    ~MonoSynthWrapper()
+    {
+        delete ptrToMonoSynth;
+    }
+
+    MonoSynth* ptrToMonoSynth = nullptr;
+};
 
 /*
  new UDT 5:
@@ -393,6 +444,8 @@ struct SubWoof
 
     void bassBoom(int startFreq);
     void gateToSignal(float inputSignal, float threshold);
+
+    JUCE_LEAK_DETECTOR(SubWoof)
 };
 
 SubWoof::SubWoof()
@@ -422,6 +475,17 @@ void SubWoof::gateToSignal(float inputSignal, float threshold)
     std::cout << "cleanBass output level is " << cleanBassAmp.outputLeveldB << " dB" << std::endl;
 }
 
+
+struct SubWoofWrapper
+{
+    SubWoofWrapper(SubWoof* ptr) : ptrToSubWoof( ptr ) {}
+    ~SubWoofWrapper()
+    {
+        delete ptrToSubWoof;
+    }
+
+    SubWoof* ptrToSubWoof = nullptr;
+};
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
 
@@ -435,33 +499,33 @@ void SubWoof::gateToSignal(float inputSignal, float threshold)
 
  Wait for my code review.
  */
-
 #include <iostream>
 int main()
 {
-    Oscillator bigSaw;
-    bigSaw.semitone = 400;
+
+    OscillatorWrapper bigSaw( new Oscillator );
+    bigSaw.ptrToOscillator->semitone = 400;
     //bigSaw.outputSignal(bigSaw.semitone, 10);
-    std::cout << "Osc is set to semitone " << bigSaw.semitone << std::endl;
-    bigSaw.getSemitone();
+    std::cout << "Osc is set to semitone " << bigSaw.ptrToOscillator->semitone << std::endl;
+    bigSaw.ptrToOscillator->getSemitone();
 
 
-    Filter highPassButter;
-    highPassButter.changeType('H');
+    FilterWrapper highPassButter( new Filter );
+    highPassButter.ptrToFilter->changeType('H');
     //highPassButter.filterSweep(30, 220, 2.2f);
-    std::cout << "Filter is set to type " << highPassButter.filterType << std::endl;
-    highPassButter.getFilterType();
+    std::cout << "Filter is set to type " << highPassButter.ptrToFilter->filterType << std::endl;
+    highPassButter.ptrToFilter->getFilterType();
 
 
-    Amplifier fatStackMcGee;
+    AmplifierWrapper fatStackMcGee( new Amplifier );
     //fatStackMcGee.addFilteredDrive(1.2f, highPassButter);
     //fatStackMcGee.envelope(20, 200, 400, 400);
-    std::cout << "Amplifier's overall loudness is " << fatStackMcGee.driveLevel * fatStackMcGee.toneLevel << std::endl;
-    fatStackMcGee.getLoudness();
+    std::cout << "Amplifier's overall loudness is " << fatStackMcGee.ptrToAmplifier->driveLevel * fatStackMcGee.ptrToAmplifier->toneLevel << std::endl;
+    fatStackMcGee.ptrToAmplifier->getLoudness();
 
     std::cout << "good to go!" << std::endl;
     std::cout << std::endl;
 
-    MonoSynth trailBlazer;
-    SubWoof bumpin;
+    MonoSynthWrapper trailBlazer( new MonoSynth );
+    SubWoofWrapper bumpin( new SubWoof );
 }
