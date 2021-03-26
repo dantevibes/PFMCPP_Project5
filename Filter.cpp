@@ -1,13 +1,12 @@
 #include "Filter.h"
 
-Filter::Filter()
-{
-    cutoffFreq = 20000;
-    resonance = 10;
-    filterType = 'N';
-    envAmount = 50;
-    wet = 127;
-}
+Filter::Filter() :
+    cutoffFreq (20000),
+    resonance (10),
+    filterType ('N'),
+    envAmount (50),
+    wet (127)
+{}
 Filter::~Filter()
 {
     std::cout << "Filt end freq is " << cutoffFreq << std::endl;

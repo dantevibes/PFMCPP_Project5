@@ -1,18 +1,16 @@
 #include "Amplifier.h"
 
-Amplifier::Amplifier()
+Amplifier::Amplifier() :   
+    driveLevel(1.f),
+    toneLevel(50),
+    waveshaperType(0),
+    outputLeveldB(1.f) 
 {
-    driveLevel = 1.f;
-    toneLevel = 50;
-    waveshaperType = 0;
-
     outputFilter.cutoffFreq = 10000;
     outputFilter.resonance = 3;
     outputFilter.filterType = 'L';
     outputFilter.envAmount = 90;
     outputFilter.wet = 33;
-    
-    outputLeveldB = 1.f;
 }
 Amplifier::~Amplifier()
 {

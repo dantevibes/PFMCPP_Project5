@@ -1,12 +1,9 @@
 #include "MonoSynth.h"
-#include "Amplifier.h"
+
 
 MonoSynth::MonoSynth()
-{
-    briteHiPass.filterType = 'H';
-    briteHiPass.cutoffFreq = 500;
-    leadWave.outputSignal(100,1);
-}
+{}
+
 MonoSynth::~MonoSynth()
 {
     powerAmp.outputLeveldB = -60.f;
@@ -20,7 +17,7 @@ void unisonFattener()
 
     syncWave.syncOscillator(leadWave);
     leadWave.phaseIndex += .05f;
-    syncWave.semitone = leadWave.semitone + 7;
+    syncWave.semitone = leadWave.semitone + 7; //didnt go farther bec  still throwing error
 
     briteHiPass.cutoffFreq = 220;
     briteHiPass.resonance = 20;
