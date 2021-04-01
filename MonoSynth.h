@@ -4,7 +4,7 @@
 #include "Amplifier.h"
 #pragma once
 
-struct MonoSynth
+struct MonoSynth //declaration of Monosynth
 {
     Oscillator leadWave;
     Oscillator syncWave;

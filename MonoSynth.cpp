@@ -2,7 +2,9 @@
 
 
 MonoSynth::MonoSynth()
-{}
+{
+    //Amplifier powerAmp;
+}
 
 MonoSynth::~MonoSynth()
 {
@@ -11,7 +13,7 @@ MonoSynth::~MonoSynth()
 }
 
 
-void unisonFattener()
+void MonoSynth::unisonFattener()
 {
     std::cout << "MonoSynth's output before UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel << std::endl;
 
@@ -29,7 +31,7 @@ void unisonFattener()
     std::cout << "MonoSynth's output after UnisonFattener: " << powerAmp.outputLeveldB * powerAmp.driveLevel << std::endl;
 }
 
-bool arpeggiator(int noteOne, int noteTwo, int noteThree)
+bool MonoSynth::arpeggiator(int noteOne, int noteTwo, int noteThree)
 {
     bool isArpDone = false;
 

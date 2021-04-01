@@ -1,7 +1,4 @@
 #include "SubWoof.h"
-#include "Oscillator.h"
-#include "Filter.h"
-#include "Amplifier.h"
 
 SubWoof::SubWoof()
 {
