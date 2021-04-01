@@ -1,6 +1,6 @@
+#pragma once
 #include "LeakedObjectDetector.h"
 #include "Oscillator.h"
-#pragma once
 
 struct Filter
 {

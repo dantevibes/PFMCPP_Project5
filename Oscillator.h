@@ -1,5 +1,5 @@
-#include "LeakedObjectDetector.h"
 #pragma once
+#include "LeakedObjectDetector.h"
 
 struct Oscillator
 {

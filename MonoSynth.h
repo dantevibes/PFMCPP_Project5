@@ -1,8 +1,8 @@
+#pragma once
 #include "LeakedObjectDetector.h"
 #include "Oscillator.h"
 #include "Filter.h"
 #include "Amplifier.h"
-#pragma once
 
 struct MonoSynth //declaration of Monosynth
 {

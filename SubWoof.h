@@ -1,8 +1,8 @@
+#pragma once
 #include "Oscillator.h"
 #include "Filter.h"
 #include "Amplifier.h"
 #include "LeakedObjectDetector.h"
-#pragma once
 
 struct SubWoof
 {
